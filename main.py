@@ -5,6 +5,8 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 
+import matplotlib.pyplot as plt
+
 def load_data(batch_size):
     train_loader = torch.utils.data.DataLoader(
         datasets.MNIST('../data', train=True, download=True,
@@ -88,6 +90,17 @@ class Net(nn.Module):
             test_loss, correct, len(test_loader.dataset),
             100. * correct / len(test_loader.dataset)))
 
+    def demo(self):
+        PATH = './mnist.pth'
+        net.load_state_dict(torch.load(PATH))
+
+        for data, target in test_loader:
+            data, target = Variable(data, volatile=True), Variable(target)
+            data = data.view(-1, 28 * 28)
+            net_out = net(data)
+
+            plt.imshow(data)
+
 
 
 if __name__ == "__main__":
@@ -99,4 +112,5 @@ if __name__ == "__main__":
     if run_opt == 1:
         net.train()
     elif run_opt == 2:
-        net.test()
+        net.demo()
+        # net.test()
